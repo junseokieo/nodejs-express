@@ -6,7 +6,7 @@ const commentSchema = new Schema({
   commenter: {
     type: ObjectId,
     required: true,
-    ref: 'User',
+    ref: 'User', //user schema의 objectID JOIN과 비슷한 기능
   },
   comment: {
     type: String,
