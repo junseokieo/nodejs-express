@@ -25,6 +25,7 @@
     "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
+    "jest": "^27.2.2",
     "nodemon": "^2.0.3"
   }
 }

@@ -8,12 +8,12 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 
 dotenv.config();
-const pageRouter = require('./routes/page');
-const authRouter = require('./routes/auth');
-const postRouter = require('./routes/post');
-const userRouter = require('./routes/user');
-const { sequelize } = require('./models');
-const passportConfig = require('./passport');
+const pageRouter = require('../../../../Downloads/노드 교과서 코드/ch11/11.4/nodebird/routes/page');
+const authRouter = require('../../../../Downloads/노드 교과서 코드/ch11/11.4/nodebird/routes/auth');
+const postRouter = require('../../../../Downloads/노드 교과서 코드/ch11/11.4/nodebird/routes/post');
+const userRouter = require('../../../../Downloads/노드 교과서 코드/ch11/11.4/nodebird/routes/user');
+const { sequelize } = require('../../../../Downloads/노드 교과서 코드/ch11/11.4/nodebird/models');
+const passportConfig = require('../../../../Downloads/노드 교과서 코드/ch11/11.4/nodebird/passport');
 
 const app = express();
 passportConfig(); // 패스포트 설정
@@ -23,6 +23,7 @@ nunjucks.configure('views', {
   express: app,
   watch: true,
 });
+
 sequelize.sync({ force: false })
   .then(() => {
     console.log('데이터베이스 연결 성공');
@@ -61,12 +62,11 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  console.error(err);
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
   res.status(err.status || 500);
   res.render('error');
 });
 
-app.listen(app.get('port'), () => {
-  console.log(app.get('port'), '번 포트에서 대기중');
-});
+module.exports = app;

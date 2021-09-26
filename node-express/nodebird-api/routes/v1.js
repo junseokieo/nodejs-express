@@ -1,13 +1,13 @@
-// nodebird 로 부터 데이터를 가져가기 위해 요청을 처리할 수 있는 라우터
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const { verifyToken } = require('./middlewares');
-const { Domain, User } = require('../models');
+const { verifyToken, deprecated } = require('./middlewares');
+const { Domain, User, Post, Hashtag } = require('../models');
 
 const router = express.Router();
 
-// 토큰을 발급해주는 라우터
+router.use(deprecated);
+
 router.post('/token', async (req, res) => {
   const { clientSecret } = req.body;
   try {
@@ -24,7 +24,6 @@ router.post('/token', async (req, res) => {
         message: '등록되지 않은 도메인입니다. 먼저 도메인을 등록하세요',
       });
     }
-    // token 발급
     const token = jwt.sign({
       id: domain.User.id,
       nick: domain.User.nick,
@@ -46,9 +45,49 @@ router.post('/token', async (req, res) => {
   }
 });
 
-// 토큰이 잘 발급됐는지 확인하는 라우터
 router.get('/test', verifyToken, (req, res) => {
   res.json(req.decoded);
+});
+
+router.get('/posts/my', verifyToken, (req, res) => {
+  Post.findAll({ where: { userId: req.decoded.id } })
+    .then((posts) => {
+      console.log(posts);
+      res.json({
+        code: 200,
+        payload: posts,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({
+        code: 500,
+        message: '서버 에러',
+      });
+    });
+});
+
+router.get('/posts/hashtag/:title', verifyToken, async (req, res) => {
+  try {
+    const hashtag = await Hashtag.findOne({ where: { title: req.params.title } });
+    if (!hashtag) {
+      return res.status(404).json({
+        code: 404,
+        message: '검색 결과가 없습니다',
+      });
+    }
+    const posts = await hashtag.getPosts();
+    return res.json({
+      code: 200,
+      payload: posts,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      message: '서버 에러',
+    });
+  }
 });
 
 module.exports = router;
