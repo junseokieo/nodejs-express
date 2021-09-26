@@ -102,6 +102,7 @@ describe('GET /logout', () => {
   });
 
   test('로그아웃 수행', async (done) => {
+    const message = encodeURIComponent('비밀번호가 일치하지 않습니다.');
     agent
       .get('/auth/logout')
       .expect('Location', `/`)
