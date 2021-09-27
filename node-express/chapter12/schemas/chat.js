@@ -12,7 +12,6 @@ const chatSchema = new Schema({
     type: String,
     required: true,
   },
-  // chat or image 둘 중 하나만 보낸다.
   chat: String,
   gif: String,
   createdAt: {
