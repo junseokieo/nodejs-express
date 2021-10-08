@@ -18,7 +18,7 @@ auth.post('/sign-up', async ( req, res, next ) => {
             nickname,
             email,
             password: hash,
-            emailConfirmed,
+            emailConfirmed: false,
         })
         res.send("성공");
     }

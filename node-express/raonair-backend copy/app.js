@@ -21,7 +21,7 @@ sequelize.sync({ force: true })
     });
 
 app.use(morgan('dev'));
-
+dotenv.config();
 
 // app.get('/', (req, res, next) => {
 //     user.create({
