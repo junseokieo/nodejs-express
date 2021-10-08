@@ -119,6 +119,6 @@ dist
 
 config/config.json
 .yarn.lock
-.DS_Store
+DS_Store
 .package.json
 .idea/
