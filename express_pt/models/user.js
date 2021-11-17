@@ -32,8 +32,8 @@ module.exports = class User extends Sequelize.Model {
       modelName: 'User',
       tableName: 'users',
       paranoid: true,
-      charset: 'utf8',
-      collate: 'utf8_general_ci',
+      charset: 'utf8', // 한글 지원
+      collate: 'utf8_general_ci', // 한글 지원
     });
     // timestamps, paranoid - deleted at created at updated at 자동 생성해줌
   }

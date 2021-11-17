@@ -19,7 +19,7 @@ module.exports = class Post extends Sequelize.Model {
       tableName: 'posts',
       paranoid: false,
       charset: 'utf8mb4',
-      collate: 'utf8mb4_general_ci',
+      collate: 'utf8mb4_general_ci', //이모티콘 가능
     });
     //  deleted at 안하고 삭제하면 그냥 삭제라서 paranoid false
   }
