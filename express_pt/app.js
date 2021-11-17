@@ -5,6 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
+const passport = require('passport');
 
 // dotenv는 require한 다음에 최대한 위에 적어주는것이 좋다.
 // process env에 설정값이 들어가는게 config를 해줘야 적용이 되기 때문
@@ -13,6 +14,7 @@ dotenv.config();
 const authRouter = require('./routes/auth');
 const pageRouter = require('./routes/page');
 const { sequelize } = require('./models');
+const passportConfig = require('./passport');
 
 const app = express();
 app.set('port', process.env.PORT || 8001); // 개발은 8000, 배포는 8001 쓸 예정
@@ -31,6 +33,7 @@ sequelize.sync({ force: false }) // true면 테이블을 지우고 다시 생성
   .catch((err) => {
     console.error(err);
   });
+  passportConfig(); // passport 연결 실행
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -46,6 +49,8 @@ app.use(session({
     secure: false,
   },
 }));
+app.use(passport.initialize());
+app.use(passport.session()); // 이때 deserialize 실행
 
 app.use('/', pageRouter); //페이지 라우터 연결
 app.use('/auth', authRouter);

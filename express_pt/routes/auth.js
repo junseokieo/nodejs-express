@@ -1,12 +1,12 @@
 const express = require('express');
-//const passport = require('passport');
-//const bcrypt = require('bcrypt');
-//const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
-//const User = require('../models/user');
+const passport = require('passport');
+const bcrypt = require('bcrypt');
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
+const User = require('../models/user');
 
 const router = express.Router();
 
-router.post('/join', async (req, res, next) => {
+router.post('/join', isNotLoggedIn, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } }); // 기존 이메일에 있는지 검사 (프론트에서 알려주고 리다이렉트)
@@ -46,18 +46,18 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
 
-router.get('/logout', isLoggedIn, (req, res) => {
+router.get('/logout', isLoggedIn, (req, res) => { // 로그인 한 사람만 로그아웃 할 수 있음
   req.logout(); // 세션 쿠키를 지워버림
   req.session.destroy(); // 세션 파괴
   res.redirect('/');
 });
 
-// router.get('/kakao', passport.authenticate('kakao'));
+router.get('/kakao', passport.authenticate('kakao')); // 카카오 startegy로 간다
 
-// router.get('/kakao/callback', passport.authenticate('kakao', {
-//   failureRedirect: '/',
-// }), (req, res) => {
-//   res.redirect('/');
-// });
+router.get('/kakao/callback', passport.authenticate('kakao', {
+  failureRedirect: '/',
+}), (req, res) => {
+  res.redirect('/');
+});
 
 module.exports = router;
